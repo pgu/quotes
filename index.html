@@ -1,48 +1,22 @@
 <!doctype html>
-<html ng-app="todoApp">
+<html ng-app="quotesApp">
 <head>
-  <script src="streamdataio.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
-  <script src="todo.js"></script>
-  <link rel="stylesheet" href="todo.css">
+  <link rel="stylesheet" href="quote.css">
 </head>
 <body>
-<h2>Todo</h2>
-<div ng-controller="TodoListController as todoList">
-  <span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
-  [ <a href="" ng-click="todoList.archive()">archive</a> ]
-  <ul class="unstyled">
-    <li ng-repeat="todo in todoList.todos">
-      <input type="checkbox" ng-model="todo.done">
-      <span class="done-{{todo.done}}">{{todo.text}}</span>
-    </li>
-  </ul>
-  <form ng-submit="todoList.addTodo()">
-    <input type="text" ng-model="todoList.todoText"  size="30"
-           placeholder="add new todo here">
-    <input class="btn-primary" type="submit" value="add">
-  </form>
+<h2>Quotes</h2>
+
+<div ng-controller="QuotesController">
+  <div ng-repeat="quote in quotes">
+    {{ quote | json : spacing }}
+  </div>
 </div>
 
-<script>
 
-  var myEvent = streamdataio.createEventSource("https://test_quotes_ftw.apispark.net/v1/quotes/",'MzlkYTVkYTMtYzRiOS00OGVlLThhOGEtOWY1YjJjY2U2ZDlh');
-  myEventSource.onData(function(data){
-    console.log("init")
-    console.log(data);
-  }).onPatch(function(data){
-    console.log("update")
-    console.log(data);
-  }).onError(function(data){
-    console.log("error")
-    console.log(data);
-  }).onOpen(function(data){
-    console.log("open")
-    console.log(data);
-  });
-  myEventSource.open();
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+<script src="streamdataio.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+<script src="quote.js"></script>
 
 </body>
 </html>
