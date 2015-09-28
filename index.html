@@ -28,9 +28,17 @@
 
   var myEvent = streamdataio.createEventSource("https://test_quotes_ftw.apispark.net/v1/quotes/",'MzlkYTVkYTMtYzRiOS00OGVlLThhOGEtOWY1YjJjY2U2ZDlh');
   myEventSource.onData(function(data){
-    // initialize your data with the initial snapshot
+    console.log("init")
+    console.log(data);
   }).onPatch(function(data){
-    // update the data with the provided patch
+    console.log("update")
+    console.log(data);
+  }).onError(function(data){
+    console.log("error")
+    console.log(data);
+  }).onOpen(function(data){
+    console.log("open")
+    console.log(data);
   });
   myEventSource.open();
 
