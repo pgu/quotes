@@ -20,6 +20,7 @@ angular.module('quotesApp', [])
       _.each(updates, function (update) {
 
         var parts = update.path.split('/');
+        parts.shift();
         var idx = _.first(parts);
         var attribute = _.last(parts);
 
