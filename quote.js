@@ -10,6 +10,14 @@ angular.module('quotesApp', [])
       console.log(data);
 
       $scope.quotes = data;
+
+      var chart = $('#container').highcharts();
+      console.info('15', 'chart', chart);
+      _.each($scope.quotes, function (quote) {
+        chart.series[ 0 ].addPoint(getOhlc(quote));
+      });
+
+
       $scope.$applyAsync();
 
     }).onPatch(function (data) {
@@ -24,9 +32,14 @@ angular.module('quotesApp', [])
         var idx = _.first(parts);
         var attribute = _.last(parts);
 
-        $scope.quotes[ idx ][ attribute ] = update.value;
+        var quote = $scope.quotes[ idx ];
+        quote[ attribute ] = update.value;
         $scope.$applyAsync();
+
       });
+
+      var chart = $('#container').highcharts();
+      chart.series[ 0 ].addPoint(getOhlc($scope.quotes[ 0 ]));
 
     }).onError(function (data) {
       console.log('error')
@@ -38,61 +51,94 @@ angular.module('quotesApp', [])
 
     myEventSource.open();
 
+    //ohlc.push([
+    //  data[i][0], // the date
+    //  data[i][1], // open
+    //  data[i][2], // high
+    //  data[i][3], // low
+    //  data[i][4] // close
+    //]);
+    function getOhlc (quote) {
+      return _.map([
+        moment.utc(quote.tradetime, 'MM/DD/YYYY HH:mm:SS').valueOf(),
+        quote.priceopen,
+        quote.high,
+        quote.low,
+        quote.closeyest
+      ], _.parseInt);
+    }
+
+    //volume.push([
+    //  data[i][0], // the date
+    //  data[i][5] // the volume
+    //]);
+    function getVolume (quote) {
+      return _.map([
+        moment.utc(quote.tradetime, 'MM/DD/YYYY HH:mm:SS').valueOf(),
+        quote.volume
+      ], _.parseInt);
+    }
+
+    // set the allowed units for data grouping
+    var groupingUnits = [ [
+      'week',                         // unit name
+      [ 1 ]                             // allowed multiples
+    ], [
+      'month',
+      [ 1, 2, 3, 4, 6 ]
+    ] ];
+
     $('#container').highcharts('StockChart', {
 
+      rangeSelector: {
+        selected: 1
+      },
 
       title: {
-        text: 'GOOG stock price by minute'
+        text: 'AAPL Historical'
       },
 
-      subtitle: {
-        text: 'Using ordinal X axis'
-      },
-
-      xAxis: {
-        gapGridLineWidth: 0
-      },
-
-      rangeSelector : {
-        buttons : [{
-          type : 'hour',
-          count : 1,
-          text : '1h'
-        }, {
-          type : 'day',
-          count : 1,
-          text : '1D'
-        }, {
-          type : 'all',
-          count : 1,
-          text : 'All'
-        }],
-        selected : 1,
-        inputEnabled : false
-      },
-
-      series : [{
-        name : 'GOOG',
-        type: 'area',
-        data : data,
-        gapSize: 5,
-        tooltip: {
-          valueDecimals: 2
+      yAxis: [ {
+        labels: {
+          align: 'right',
+          x: -3
         },
-        fillColor : {
-          linearGradient : {
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: 1
-          },
-          stops : [
-            [0, Highcharts.getOptions().colors[0]],
-            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-          ]
+        title: {
+          text: 'OHLC'
         },
-        threshold: null
-      }]
+        height: '60%',
+        lineWidth: 2
+      }, {
+        labels: {
+          align: 'right',
+          x: -3
+        },
+        title: {
+          text: 'Volume'
+        },
+        top: '65%',
+        height: '35%',
+        offset: 0,
+        lineWidth: 2
+      } ],
+
+      series: [ {
+        type: 'candlestick',
+        name: 'AAPL',
+        data: [],
+        dataGrouping: {
+          units: groupingUnits
+        }
+      },
+        {
+          type: 'column',
+          name: 'Volume',
+          data: [],
+          yAxis: 1,
+          dataGrouping: {
+            units: groupingUnits
+          }
+        } ]
     });
 
   });
