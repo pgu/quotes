@@ -3,6 +3,14 @@ angular.module('quotesApp', [])
 
     $scope.quotes = [];
 
+    function getPriceChart () {
+      return $('#price-chart').highcharts();
+    }
+
+    function getVolumeChart () {
+      return $('#volume-chart').highcharts();
+    }
+
     var myEventSource = streamdataio.createEventSource('https://test_quotes_ftw.apispark.net/v1/quotes/', 'MzlkYTVkYTMtYzRiOS00OGVlLThhOGEtOWY1YjJjY2U2ZDlh');
 
     myEventSource.onData(function (data) {
@@ -11,10 +19,11 @@ angular.module('quotesApp', [])
 
       $scope.quotes = data;
 
-      var chart = $('#container').highcharts();
-      console.info('15', 'chart', chart);
       _.each($scope.quotes, function (quote) {
-        chart.series[ 0 ].addPoint(getOhlc(quote));
+
+        getPriceChart().series[ 0 ].addPoint(getPricePoint(quote));
+        getVolumeChart().series[ 0 ].addPoint(getVolumePoint(quote));
+
       });
 
 
@@ -38,8 +47,8 @@ angular.module('quotesApp', [])
 
       });
 
-      var chart = $('#container').highcharts();
-      chart.series[ 0 ].addPoint(getOhlc($scope.quotes[ 0 ]));
+      getPriceChart().series[ 0 ].addPoint(getPricePoint($scope.quotes[ 0 ]));
+      getVolumeChart().series[ 0 ].addPoint(getVolumePoint($scope.quotes[ 0 ]));
 
     }).onError(function (data) {
       console.log('error')
@@ -51,94 +60,97 @@ angular.module('quotesApp', [])
 
     myEventSource.open();
 
-    //ohlc.push([
-    //  data[i][0], // the date
-    //  data[i][1], // open
-    //  data[i][2], // high
-    //  data[i][3], // low
-    //  data[i][4] // close
-    //]);
-    function getOhlc (quote) {
-      return _.map([
-        moment.utc(quote.tradetime, 'MM/DD/YYYY HH:mm:SS').valueOf(),
-        quote.priceopen,
-        quote.high,
-        quote.low,
-        quote.closeyest
-      ], _.parseInt);
+    function getPoint (tradetime, valueAsString) {
+
+      var point = [
+        moment.utc(tradetime, 'MM/DD/YYYY HH:mm:SS').valueOf(),
+        parseFloat(valueAsString, 10)
+      ];
+
+      console.info('70', 'getPoint', 'point', point);
+      return point;
     }
 
-    //volume.push([
-    //  data[i][0], // the date
-    //  data[i][5] // the volume
-    //]);
-    function getVolume (quote) {
-      return _.map([
-        moment.utc(quote.tradetime, 'MM/DD/YYYY HH:mm:SS').valueOf(),
-        quote.volume
-      ], _.parseInt);
+    function getPricePoint (quote) {
+      return getPoint(quote.tradetime, quote.price);
     }
 
-    // set the allowed units for data grouping
-    var groupingUnits = [ [
-      'week',                         // unit name
-      [ 1 ]                             // allowed multiples
-    ], [
-      'month',
-      [ 1, 2, 3, 4, 6 ]
-    ] ];
+    function getVolumePoint (quote) {
+      return getPoint(quote.tradetime, quote.volume);
+    }
 
-    $('#container').highcharts('StockChart', {
+    Highcharts.setOptions({
+      global: {
+        useUTC: false
+      }
+    });
 
-      rangeSelector: {
-        selected: 1
+    $('#price-chart').highcharts({
+
+      chart: {
+        type: 'spline',
+        animation: Highcharts.svg, // don't animate in old IE
+        marginRight: 10
       },
-
       title: {
-        text: 'AAPL Historical'
+        text: 'Live random data'
       },
-
-      yAxis: [ {
-        labels: {
-          align: 'right',
-          x: -3
-        },
+      xAxis: {
+        type: 'datetime',
+        tickPixelInterval: 150
+      },
+      yAxis: {
         title: {
-          text: 'OHLC'
+          text: 'Value'
         },
-        height: '60%',
-        lineWidth: 2
-      }, {
-        labels: {
-          align: 'right',
-          x: -3
-        },
-        title: {
-          text: 'Volume'
-        },
-        top: '65%',
-        height: '35%',
-        offset: 0,
-        lineWidth: 2
-      } ],
+        plotLines: [ {
+          value: 0,
+          width: 1,
+          color: '#808080'
+        } ]
+      },
+      legend: {
+        enabled: false
+      },
+      exporting: {
+        enabled: false
+      },
+      series: [
+        {
+          name: 'GOOG',
+          data: []
+        }
+      ]
 
-      series: [ {
-        type: 'candlestick',
-        name: 'AAPL',
-        data: [],
-        dataGrouping: {
-          units: groupingUnits
+    });
+
+
+    $('#volume-chart').highcharts({
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'World\'s largest cities per 2014'
+      },
+      xAxis: {
+        type: 'category'
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Population (millions)'
         }
       },
+      legend: {
+        enabled: false
+      },
+      series: [
         {
-          type: 'column',
-          name: 'Volume',
-          data: [],
-          yAxis: 1,
-          dataGrouping: {
-            units: groupingUnits
-          }
-        } ]
+          name: 'GOOG',
+          data: []
+        }
+      ]
+
     });
 
   });
