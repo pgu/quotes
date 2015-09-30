@@ -7,25 +7,25 @@ angular.module('quotesApp', [])
       return $('#price-chart-' + quoteId);
     }
 
-    function getPriceChart (quoteId) {
-      return getPriceChartId(quoteId).highcharts();
-    }
-
     function getVolumeChartId (quoteId) {
       return $('#volume-chart-' + quoteId);
     }
 
-    function getVolumeChart (quoteId) {
-      return getVolumeChartId(quoteId).highcharts();
+    function getPriceSerie (quoteId) {
+      return _.first(getPriceChartId(quoteId).highcharts().series);
+    }
+
+    function getVolumeSerie (quoteId) {
+      return _.first(getVolumeChartId(quoteId).highcharts().series);
     }
 
     var myEventSource = streamdataio.createEventSource('https://test_quotes_ftw.apispark.net/v1/quotes/', 'MzlkYTVkYTMtYzRiOS00OGVlLThhOGEtOWY1YjJjY2U2ZDlh');
 
-    myEventSource.onData(function (data) {
+    myEventSource.onData(function (quotes) {
       console.log('init')
-      console.log(data);
+      console.log(quotes);
 
-      $scope.quotes = data;
+      $scope.quotes = quotes;
 
       _.each($scope.quotes, function (quote) {
 
@@ -36,26 +36,30 @@ angular.module('quotesApp', [])
 
       $scope.$applyAsync();
 
-    }).onPatch(function (data) {
+    }).onPatch(function (updates) {
       console.log('update')
-      console.log(data);
+      console.log(updates);
 
-      var updates = data;
-      _.each(updates, function (update) {
+      var updatedQuotes = _.reduce(updates, function (updatedItems, update) {
 
-        var parts = update.path.split('/');
-        parts.shift();
-        var idx = _.first(parts);
-        var attribute = _.last(parts);
+        var path = parsePath(update.path);
 
-        var quote = $scope.quotes[ idx ];
-        quote[ attribute ] = update.value;
-        $scope.$applyAsync();
+        var quote = $scope.quotes[ path.idx ];
+        quote[ path.attribute ] = update.value;
+
+        updatedItems.push(quote);
+        return updatedItems;
+
+      }, []);
+
+      _.each(updatedQuotes, function (updatedQuote) {
+
+        getPriceSerie().addPoint(getPricePoint(updatedQuote));
+        getVolumeSerie().addPoint(getVolumePoint(updatedQuote));
 
       });
 
-      //getPriceChart().series[ 0 ].addPoint(getPricePoint($scope.quotes[ 0 ]));
-      //getVolumeChart().series[ 0 ].addPoint(getVolumePoint($scope.quotes[ 0 ]));
+      $scope.$applyAsync();
 
     }).onError(function (data) {
       console.log('error')
@@ -167,5 +171,16 @@ angular.module('quotesApp', [])
 
     var initPriceChart = initChart(_initPriceChart);
     var initVolumeChart = initChart(_initVolumeChart);
+
+    function parsePath (path) {
+
+      var parts = path.split('/'); // '/0/price'
+      parts.shift(); // [ "", "0", "price" ] -> [ "0", "price" ]
+
+      return {
+        idx: _.first(parts),
+        attribute: _.last(parts)
+      };
+    }
 
   });
