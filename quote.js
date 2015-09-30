@@ -88,78 +88,84 @@ angular.module('quotesApp', [])
       ];
     }
 
-    function initPriceChart (quote, data) {
-      return $timeout(function () {
+    function _initPriceChart (quote, data) {
+      getPriceChartId(quote.id).highcharts({
 
-        getPriceChartId(quote.id).highcharts({
-
-          chart: {
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10
-          },
-          title: {
-            text: 'Quotes'
-          },
-          xAxis: {
-            type: 'datetime',
-            tickPixelInterval: 150
-          },
-          yAxis: {
-            plotLines: [ {
-              value: 0,
-              width: 1,
-              color: '#808080'
-            } ]
-          },
-          legend: {
-            enabled: false
-          },
-          exporting: {
-            enabled: false
-          },
-          series: [
-            {
-              name: quote.id,
-              data: data
-            }
-          ]
-
-        });
-
-      });
-    }
-
-    function initVolumeChart (quote, data) {
-
-      return $timeout(function () {
-
-        getVolumeChartId(quote.id).highcharts({
-          chart: {
-            type: 'column'
-          },
-          title: {
-            text: 'Volumes'
-          },
-          xAxis: {
-            type: 'category'
-          },
-          yAxis: {
-            min: 0
-          },
-          legend: {
-            enabled: false
-          },
-          series: [
-            {
-              name: quote.id,
-              data: data
-            }
-          ]
-        });
+        chart: {
+          type: 'spline',
+          animation: Highcharts.svg, // don't animate in old IE
+          marginRight: 10
+        },
+        title: {
+          text: 'Quotes'
+        },
+        xAxis: {
+          type: 'datetime',
+          tickPixelInterval: 150
+        },
+        yAxis: {
+          plotLines: [ {
+            value: 0,
+            width: 1,
+            color: '#808080'
+          } ]
+        },
+        legend: {
+          enabled: false
+        },
+        exporting: {
+          enabled: false
+        },
+        series: [
+          {
+            name: quote.id,
+            data: data
+          }
+        ]
 
       });
 
     }
+
+    function _initVolumeChart (quote, data) {
+
+      getVolumeChartId(quote.id).highcharts({
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: 'Volumes'
+        },
+        xAxis: {
+          type: 'category'
+        },
+        yAxis: {
+          min: 0
+        },
+        legend: {
+          enabled: false
+        },
+        series: [
+          {
+            name: quote.id,
+            data: data
+          }
+        ]
+      });
+
+    }
+
+    function initChart (fnChart) {
+      return function (quote, data) {
+
+        $timeout(function () {
+          return fnChart(quote, data);
+        }, 300);
+
+      };
+    }
+
+    var initPriceChart = initChart(_initPriceChart);
+    var initVolumeChart = initChart(_initVolumeChart);
 
   });
