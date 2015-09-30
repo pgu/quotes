@@ -19,6 +19,24 @@
 
   <div ng-controller="QuotesController">
 
+    <ul class="collapsible popout" data-collapsible="accordion">
+      <li>
+        <div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
+        <div class="collapsible-body">
+
+          <p>
+            <a class="waves-effect waves-light btn" ng-repeat="quote in quotes">{{ quote.id }}</a>
+          </p>
+
+          <p ng-if="quotes.length" ng-init="refQuote = quotes[0]">
+            <a class="waves-effect waves-light btn" ng-repeat="key in keys(refQuote)">{{ key }}</a>
+          </p>
+
+          <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+      </li>
+    </ul>
+
     <div style="overflow:scroll;">
 
       <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
