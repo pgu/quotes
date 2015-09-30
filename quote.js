@@ -12,8 +12,6 @@ angular.module('quotesApp', [])
     }
 
     function getPriceSerie (quoteId) {
-      console.info('15', 'getPriceSerie', getPriceChartId(quoteId));
-      console.info('15', 'getPriceSerie', 'hg', getPriceChartId(quoteId).highcharts());
       return _.first(getPriceChartId(quoteId).highcharts().series);
     }
 
@@ -56,8 +54,8 @@ angular.module('quotesApp', [])
 
       _.each(updatedQuotes, function (updatedQuote) {
 
-        //getPriceSerie().addPoint(getPricePoint(updatedQuote));
-        getVolumeSerie().addPoint(getVolumePoint(updatedQuote));
+        getPriceSerie(quote.id).addPoint(getPricePoint(updatedQuote));
+        getVolumeSerie(quote.id).addPoint(getVolumePoint(updatedQuote));
 
       });
 
