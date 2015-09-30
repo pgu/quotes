@@ -54,8 +54,8 @@ angular.module('quotesApp', [])
 
       _.each(updatedQuotes, function (updatedQuote) {
 
-        getPriceSerie(quote.id).addPoint(getPricePoint(updatedQuote));
-        getVolumeSerie(quote.id).addPoint(getVolumePoint(updatedQuote));
+        getPriceSerie(updatedQuote.id).addPoint(getPricePoint(updatedQuote));
+        getVolumeSerie(updatedQuote.id).addPoint(getVolumePoint(updatedQuote));
 
       });
 
