@@ -2,6 +2,7 @@ angular.module('quotesApp', [])
   .controller('QuotesController', function ($window, $scope, $timeout) {
 
     $scope.quotes = [];
+    $scope.quoteState = {};
 
     function getPriceChartId (quoteId) {
       return $('#price-chart-' + quoteId);
@@ -40,18 +41,44 @@ angular.module('quotesApp', [])
       console.log('update')
       console.log(updates);
 
-      var updatedQuotes = _.reduce(updates, function (updatedItems, update) {
+      var oldQuotes = _.reduce(updates, function (oldItems, update) {
+
+        var path = parsePath(update.path);
+        var quote = $scope.quotes[ path.idx ];
+
+        oldItems[ quote.id ] = _.cloneDeep(quote);
+        return oldItems;
+      }, {});
+
+      var updatedQuotes = _.uniq(_.reduce(updates, function (updatedItems, update) {
 
         var path = parsePath(update.path);
 
         var quote = $scope.quotes[ path.idx ];
         quote[ path.attribute ] = update.value;
 
+        if (!_.has($scope.quoteState, quote.id)) {
+          $scope.quoteState[ quote.id ] = {};
+        }
+
+        var oldValue = parseFloat(oldQuotes[ quote.id ][ path.attribute ], 10);
+        var newValue = parseFloat(quote[ path.attribute ], 10);
+
+        var change = newValue > oldValue ? 'up' : 'down';
+        $scope.quoteState[ quote.id ][ path.attribute ] = change;
+
+        $timeout(function () {
+          $scope.quoteState[ quote.id ][ path.attribute ] = change;
+        }, 1000);
+
+
         updatedItems.push(quote);
         return updatedItems;
 
-      }, []);
+      }, []));
 
+
+      // update charts
       _.each(updatedQuotes, function (updatedQuote) {
 
         getPriceSerie(updatedQuote.id).addPoint(getPricePoint(updatedQuote));

@@ -6,30 +6,45 @@
 </head>
 <body>
 
-<div ng-controller="QuotesController">
+<div class="container">
 
-  <div ng-repeat="quote in quotes">
+  <div ng-controller="QuotesController">
 
-    <div id="price-chart-{{ quote.id }}" style="height: 100px; width: 200px"></div>
-    <div id="volume-chart-{{ quote.id }}" style="height: 100px; width: 200px"></div>
+    <div ng-repeat="quote in quotes">
+
+      <div id="price-chart-{{ quote.id }}" style="height: 200px; width: 400px"></div>
+      <div id="volume-chart-{{ quote.id }}" style="height: 200px; width: 400px"></div>
+
+    </div>
+
+    <div style="overflow:scroll;">
+
+      <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
+             class="striped">
+        <thead>
+        <tr>
+          <th ng-repeat="key in keys(refQuote)"
+              data-field="key"
+              style="text-align: right;">
+            {{ key }}
+          </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="quote in quotes">
+          <td ng-repeat="key in keys(refQuote)"
+              style="text-align: right;"
+              ng-class="{ up: 'highlight-green', down: 'highlight-red'}[quoteState[quote.id][key]]">
+            {{ quote[key] }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
 
   </div>
-
-  <table ng-if="quotes.length" ng-init="refQuote = quotes[0]">
-    <thead>
-    <tr>
-      <th ng-repeat="key in keys(refQuote)"
-          data-field="key">{{ key }}
-      </th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <tr ng-repeat="quote in quotes">
-      <td ng-repeat="key in keys(refQuote)">{{ quote[key] }}</td>
-    </tr>
-    </tbody>
-  </table>
 
 </div>
 
