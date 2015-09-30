@@ -1,14 +1,22 @@
 angular.module('quotesApp', [])
-  .controller('QuotesController', function ($window, $scope) {
+  .controller('QuotesController', function ($window, $scope, $timeout) {
 
     $scope.quotes = [];
 
-    function getPriceChart () {
-      return $('#price-chart').highcharts();
+    function getPriceChartId (quoteId) {
+      return $('#price-chart-' + quoteId);
     }
 
-    function getVolumeChart () {
-      return $('#volume-chart').highcharts();
+    function getPriceChart (quoteId) {
+      return getPriceChartId(quoteId).highcharts();
+    }
+
+    function getVolumeChartId (quoteId) {
+      return $('#volume-chart-' + quoteId);
+    }
+
+    function getVolumeChart (quoteId) {
+      return getVolumeChartId(quoteId).highcharts();
     }
 
     var myEventSource = streamdataio.createEventSource('https://test_quotes_ftw.apispark.net/v1/quotes/', 'MzlkYTVkYTMtYzRiOS00OGVlLThhOGEtOWY1YjJjY2U2ZDlh');
@@ -21,11 +29,10 @@ angular.module('quotesApp', [])
 
       _.each($scope.quotes, function (quote) {
 
-        getPriceChart().series[ 0 ].addPoint(getPricePoint(quote));
-        getVolumeChart().series[ 0 ].addPoint(getVolumePoint(quote));
+        initPriceChart(quote, [ getPricePoint(quote) ]);
+        initVolumeChart(quote, [ getVolumePoint(quote) ]);
 
       });
-
 
       $scope.$applyAsync();
 
@@ -47,8 +54,8 @@ angular.module('quotesApp', [])
 
       });
 
-      getPriceChart().series[ 0 ].addPoint(getPricePoint($scope.quotes[ 0 ]));
-      getVolumeChart().series[ 0 ].addPoint(getVolumePoint($scope.quotes[ 0 ]));
+      //getPriceChart().series[ 0 ].addPoint(getPricePoint($scope.quotes[ 0 ]));
+      //getVolumeChart().series[ 0 ].addPoint(getVolumePoint($scope.quotes[ 0 ]));
 
     }).onError(function (data) {
       console.log('error')
@@ -67,7 +74,6 @@ angular.module('quotesApp', [])
         parseFloat(valueAsString, 10)
       ];
 
-      console.info('70', 'getPoint', 'point', point);
       return point;
     }
 
@@ -76,81 +82,84 @@ angular.module('quotesApp', [])
     }
 
     function getVolumePoint (quote) {
-      return getPoint(quote.tradetime, quote.volume);
+      return [
+        quote.tradetime,
+        _.parseInt(quote.volume)
+      ];
     }
 
-    Highcharts.setOptions({
-      global: {
-        useUTC: false
-      }
-    });
+    function initPriceChart (quote, data) {
+      return $timeout(function () {
 
-    $('#price-chart').highcharts({
+        getPriceChartId(quote.id).highcharts({
 
-      chart: {
-        type: 'spline',
-        animation: Highcharts.svg, // don't animate in old IE
-        marginRight: 10
-      },
-      title: {
-        text: 'Live random data'
-      },
-      xAxis: {
-        type: 'datetime',
-        tickPixelInterval: 150
-      },
-      yAxis: {
-        title: {
-          text: 'Value'
-        },
-        plotLines: [ {
-          value: 0,
-          width: 1,
-          color: '#808080'
-        } ]
-      },
-      legend: {
-        enabled: false
-      },
-      exporting: {
-        enabled: false
-      },
-      series: [
-        {
-          name: 'GOOG',
-          data: []
-        }
-      ]
+          chart: {
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10
+          },
+          title: {
+            text: 'Quotes'
+          },
+          xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150
+          },
+          yAxis: {
+            plotLines: [ {
+              value: 0,
+              width: 1,
+              color: '#808080'
+            } ]
+          },
+          legend: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          series: [
+            {
+              name: quote.id,
+              data: data
+            }
+          ]
 
-    });
+        });
 
+      });
+    }
 
-    $('#volume-chart').highcharts({
-      chart: {
-        type: 'column'
-      },
-      title: {
-        text: 'World\'s largest cities per 2014'
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        min: 0,
-        title: {
-          text: 'Population (millions)'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      series: [
-        {
-          name: 'GOOG',
-          data: []
-        }
-      ]
+    function initVolumeChart (quote, data) {
 
-    });
+      return $timeout(function () {
+
+        getVolumeChartId(quote.id).highcharts({
+          chart: {
+            type: 'column'
+          },
+          title: {
+            text: 'Volumes'
+          },
+          xAxis: {
+            type: 'category'
+          },
+          yAxis: {
+            min: 0
+          },
+          legend: {
+            enabled: false
+          },
+          series: [
+            {
+              name: quote.id,
+              data: data
+            }
+          ]
+        });
+
+      });
+
+    }
 
   });
