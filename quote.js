@@ -66,18 +66,21 @@ angular.module('quotesApp', [])
           $scope.quoteState[ quote.id ] = {};
         }
 
-        var oldValue = parseFloat(oldQuotes[ quote.id ][ path.attribute ], 10);
-        var newValue = parseFloat(quote[ path.attribute ], 10);
+        if (path.attribute !== 'tradetime') {
 
-        var bgCss = newValue > oldValue ? 'bg-up' : 'bg-down';
-        $scope.quoteState[ quote.id ][ path.attribute ] = bgCss;
+          var oldValue = parseFloat(oldQuotes[ quote.id ][ path.attribute ], 10);
+          var newValue = parseFloat(quote[ path.attribute ], 10);
 
-        $timeout(function () {
-          var bgCss = $scope.quoteState[ quote.id ][ path.attribute ];
+          var bgCss = newValue > oldValue ? 'bg-up' : 'bg-down';
+          $scope.quoteState[ quote.id ][ path.attribute ] = bgCss;
 
-          $scope.quoteState[ quote.id ][ path.attribute ] = bg2fontCss[ bgCss ];
-        }, 1000);
+          $timeout(function () {
+            var bgCss = $scope.quoteState[ quote.id ][ path.attribute ];
 
+            $scope.quoteState[ quote.id ][ path.attribute ] = bg2fontCss[ bgCss ];
+          }, 1000);
+
+        }
 
         updatedItems.push(quote);
         return updatedItems;
