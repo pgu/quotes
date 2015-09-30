@@ -16,8 +16,18 @@
 
     <div ng-repeat="quote in quotes">
 
-      <div id="price-chart-{{ quote.id }}" style="height: 200px; width: 400px"></div>
-      <div id="volume-chart-{{ quote.id }}" style="height: 200px; width: 400px"></div>
+      <div class="row">
+        <div class="col s6">
+          <div class="card-panel">
+            <div id="price-chart-{{ quote.id }}"></div>
+          </div>
+        </div>
+        <div class="col s6">
+          <div class="card-panel">
+            <div id="volume-chart-{{ quote.id }}"></div>
+          </div>
+        </div>
+      </div>
 
     </div>
 

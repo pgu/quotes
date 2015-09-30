@@ -92,8 +92,8 @@ angular.module('quotesApp')
       // update charts
       _.each(updatedQuotes, function (updatedQuote) {
 
-        chartHelper.getPriceSerie(updatedQuote.id).addPoint(getPricePoint(updatedQuote));
-        chartHelper.getVolumeSerie(updatedQuote.id).addPoint(getVolumePoint(updatedQuote));
+        chartHelper.getPriceSerie(updatedQuote.id).addPoint(quoteHelper.getPricePoint(updatedQuote));
+        chartHelper.getVolumeSerie(updatedQuote.id).addPoint(quoteHelper.getVolumePoint(updatedQuote));
 
       });
 
