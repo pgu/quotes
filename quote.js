@@ -68,7 +68,7 @@ angular.module('quotesApp', [])
         $scope.quoteState[ quote.id ][ path.attribute ] = change;
 
         $timeout(function () {
-          $scope.quoteState[ quote.id ][ path.attribute ] = change;
+          $scope.quoteState[ quote.id ][ path.attribute ] = '';
         }, 1000);
 
 
