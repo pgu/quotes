@@ -4,6 +4,11 @@ angular.module('quotesApp', [])
     $scope.quotes = [];
     $scope.quoteState = {};
 
+    var bg2fontCss = {
+      'bg-up': 'font-up',
+      'bg-down': 'font-down'
+    };
+
     function getPriceChartId (quoteId) {
       return $('#price-chart-' + quoteId);
     }
@@ -64,11 +69,13 @@ angular.module('quotesApp', [])
         var oldValue = parseFloat(oldQuotes[ quote.id ][ path.attribute ], 10);
         var newValue = parseFloat(quote[ path.attribute ], 10);
 
-        var change = newValue > oldValue ? 'up' : 'down';
-        $scope.quoteState[ quote.id ][ path.attribute ] = change;
+        var bgCss = newValue > oldValue ? 'bg-up' : 'bg-down';
+        $scope.quoteState[ quote.id ][ path.attribute ] = bgCss;
 
         $timeout(function () {
-          $scope.quoteState[ quote.id ][ path.attribute ] = '';
+          var bgCss = $scope.quoteState[ quote.id ][ path.attribute ];
+
+          $scope.quoteState[ quote.id ][ path.attribute ] = bg2fontCss[ bgCss ];
         }, 1000);
 
 
