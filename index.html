@@ -39,10 +39,10 @@
         <tr ng-repeat="quote in quotes">
           <td ng-repeat="key in keys(refQuote)"
               style="text-align: right;"
-              ng-class="{ 'bg-up': 'highlight-green',
-              'bg-down': 'highlight-red',
-              'font-up': 'font-green',
-              'font-down': 'font-red',
+              ng-class="{ 'bg-up': 'green',
+              'bg-down': 'red',
+              'font-up': 'green-text text-darken-2',
+              'font-down': 'red-text text-darken-2',
               }[quoteState[quote.id][key]]">
             {{ quote[key] }}
           </td>
