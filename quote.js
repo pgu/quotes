@@ -12,6 +12,8 @@ angular.module('quotesApp', [])
     }
 
     function getPriceSerie (quoteId) {
+      console.info('15', 'getPriceSerie', getPriceChartId(quoteId));
+      console.info('15', 'getPriceSerie', 'hg', getPriceChartId(quoteId).highcharts());
       return _.first(getPriceChartId(quoteId).highcharts().series);
     }
 
@@ -54,7 +56,7 @@ angular.module('quotesApp', [])
 
       _.each(updatedQuotes, function (updatedQuote) {
 
-        getPriceSerie().addPoint(getPricePoint(updatedQuote));
+        //getPriceSerie().addPoint(getPricePoint(updatedQuote));
         getVolumeSerie().addPoint(getVolumePoint(updatedQuote));
 
       });
@@ -182,5 +184,12 @@ angular.module('quotesApp', [])
         attribute: _.last(parts)
       };
     }
+
+    $scope.keys = function (quote) {
+      return _.filter(_.keys(quote), function (key) {
+        var startsWith$$ = key.indexOf('$$') === 0;
+        return !startsWith$$;
+      });
+    };
 
   });

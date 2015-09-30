@@ -7,14 +7,29 @@
 <body>
 
 <div ng-controller="QuotesController">
+
   <div ng-repeat="quote in quotes">
-    {{ quote | json : spacing }}
 
     <div id="price-chart-{{ quote.id }}" style="height: 100px; width: 200px"></div>
     <div id="volume-chart-{{ quote.id }}" style="height: 100px; width: 200px"></div>
 
   </div>
 
+  <table ng-if="quotes.length" ng-init="refQuote = quotes[0]">
+    <thead>
+    <tr>
+      <th ng-repeat="key in keys(refQuote)"
+          data-field="key">{{ key }}
+      </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr ng-repeat="quote in quotes">
+      <td ng-repeat="key in keys(refQuote)">{{ quote[key] }}</td>
+    </tr>
+    </tbody>
+  </table>
 
 </div>
 
