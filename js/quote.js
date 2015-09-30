@@ -35,8 +35,8 @@ angular.module('quotesApp')
 
       _.each($scope.quotes, function (quote) {
 
-        chartHelper.initPriceChart(quote, [ getPricePoint(quote) ]);
-        chartHelper.initVolumeChart(quote, [ getVolumePoint(quote) ]);
+        chartHelper.initPriceChart(quote, [ quoteHelper.getPricePoint(quote) ]);
+        chartHelper.initVolumeChart(quote, [ quoteHelper.getVolumePoint(quote) ]);
 
       });
 

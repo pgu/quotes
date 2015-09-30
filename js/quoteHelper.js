@@ -9,7 +9,9 @@ angular.module('quotesApp')
 
     var service = {
       updateQuotes: updateQuotes,
-      copyQuotesToUpdate: copyQuotesToUpdate
+      copyQuotesToUpdate: copyQuotesToUpdate,
+      getPricePoint: getPricePoint,
+      getVolumePoint: getVolumePoint
     };
     return service;
 
