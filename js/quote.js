@@ -11,6 +11,11 @@ angular.module('quotesApp')
     ctrl.onError = onError;
     ctrl.onOpen = onOpen;
 
+    ctrl.bg2fontCss = {
+      'bg-up': 'font-up',
+      'bg-down': 'font-down'
+    };
+
     var myEventSource = streamdataio.createEventSource('https://test_quotes_ftw.apispark.net/v1/quotes/', STREAMDATAIO_KEY);
 
     myEventSource
@@ -60,12 +65,12 @@ angular.module('quotesApp')
 
       _(updates)
         .filter(function (update) {
-          var path = parsePath(update.path);
+          var path = quoteHelper.parsePath(update.path);
           return path.attribute !== 'tradetime';
         })
         .each(function (update) {
 
-          var path = parsePath(update.path);
+          var path = quoteHelper.parsePath(update.path);
           var quoteId = $scope.quotes[ path.idx ].id;
           var att = path.attribute;
 
@@ -77,7 +82,7 @@ angular.module('quotesApp')
 
           $timeout(function () {
             var bgCss = $scope.quoteState[ quoteId ][ att ];
-            $scope.quoteState[ quoteId ][ att ] = bg2fontCss[ bgCss ];
+            $scope.quoteState[ quoteId ][ att ] = ctrl.bg2fontCss[ bgCss ];
           }, 1000);
 
         })

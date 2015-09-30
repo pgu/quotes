@@ -2,16 +2,12 @@ angular.module('quotesApp')
   .factory('quoteHelper', function () {
 
 
-    var bg2fontCss = {
-      'bg-up': 'font-up',
-      'bg-down': 'font-down'
-    };
-
     var service = {
       updateQuotes: updateQuotes,
       copyQuotesToUpdate: copyQuotesToUpdate,
       getPricePoint: getPricePoint,
-      getVolumePoint: getVolumePoint
+      getVolumePoint: getVolumePoint,
+      parsePath: parsePath
     };
     return service;
 
