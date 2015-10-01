@@ -22,15 +22,31 @@
     <ul class="collapsible popout" data-collapsible="accordion">
       <li>
         <div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
-        <div class="collapsible-body">
+        <div class="collapsible-body white">
 
-          <p>
-            <a class="waves-effect waves-light btn" ng-repeat="quote in quotes">{{ quote.id }}</a>
-          </p>
+          <div class="switch" ng-repeat="quote in quotes">
+            {{ quote.id }}
+            <label>
+              Off
+              <input type="checkbox" ng-model="quoteSelection[quote.id]">
+              <span class="lever"></span>
+              On
+            </label>
+          </div>
 
-          <p ng-if="quotes.length" ng-init="refQuote = quotes[0]">
-            <a class="waves-effect waves-light btn" ng-repeat="key in keys(refQuote)">{{ key }}</a>
-          </p>
+          <div ng-if="quotes.length" ng-init="refQuote = quotes[0]">
+
+            <div class="switch" ng-repeat="key in keys(refQuote)">
+              {{ key }}
+              <label>
+                Off
+                <input type="checkbox" ng-model="attributeSelection[key]">
+                <span class="lever"></span>
+                On
+              </label>
+            </div>
+
+          </div>
 
           <p>Lorem ipsum dolor sit amet.</p>
         </div>
@@ -54,7 +70,9 @@
 
         <tbody>
         <tr ng-repeat="quote in quotes">
-          <td ng-repeat="key in keys(refQuote)"
+
+          <td ng-if="quoteSelection[quote.id]"
+              ng-repeat="key in keys(refQuote)"
               style="text-align: right;"
               ng-class="{ 'bg-up': 'green',
               'bg-down': 'red',
@@ -72,7 +90,8 @@
 
     <div ng-repeat="quote in quotes">
 
-      <div class="row">
+      <div class="row"
+           ng-show="quoteSelection[quote.id]">
         <div class="col s6">
           <div class="card-panel">
             <div id="price-chart-{{ quote.id }}"></div>

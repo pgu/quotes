@@ -4,6 +4,8 @@ angular.module('quotesApp')
 
     $scope.quotes = [];
     $scope.quoteState = {};
+    $scope.quoteSelection = {};
+    $scope.attributeSelection = {};
 
     var ctrl = this;
     ctrl.onData = onData;
@@ -38,7 +40,17 @@ angular.module('quotesApp')
 
       $scope.quotes = quotes;
 
+      if (!_.isEmpty($scope.quotes)) {
+
+        _.each($scope.keys(_.first($scope.quotes)), function (key) {
+          $scope.attributeSelection[ key ] = true;
+        });
+
+      }
+
       _.each($scope.quotes, function (quote) {
+
+        $scope.quoteSelection[ quote.id ] = true;
 
         chartHelper.initPriceChart(quote, [ quoteHelper.getPricePoint(quote) ]);
         chartHelper.initVolumeChart(quote, [ quoteHelper.getVolumePoint(quote) ]);
