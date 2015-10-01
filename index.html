@@ -24,31 +24,71 @@
         <div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
         <div class="collapsible-body white">
 
-          <div class="switch" ng-repeat="quote in quotes">
-            {{ quote.id }}
-            <label>
-              Off
-              <input type="checkbox" ng-model="quoteSelection[quote.id]">
-              <span class="lever"></span>
-              On
-            </label>
-          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col s6">
 
-          <div ng-if="quotes.length" ng-init="refQuote = quotes[0]">
+                <table>
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th></th>
+                  </tr>
+                  </thead>
 
-            <div class="switch" ng-repeat="key in keys(refQuote)">
-              {{ key }}
-              <label>
-                Off
-                <input type="checkbox" ng-model="attributeSelection[key]">
-                <span class="lever"></span>
-                On
-              </label>
+                  <tbody>
+                  <tr ng-repeat="quote in quotes">
+                    <td>{{ quote.id }}</td>
+                    <td>
+
+                      <div class="switch">
+                        <label>
+                          Off
+                          <input type="checkbox" ng-model="quoteSelection[quote.id]">
+                          <span class="lever"></span>
+                          On
+                        </label>
+                      </div>
+
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+
+              </div>
+              <div class="col s6">
+
+                <table ng-if="quotes.length" ng-init="refQuote = quotes[0]">
+                  <thead>
+                  <tr>
+                    <th>Attributes</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr ng-repeat="key in keys(refQuote)">
+                    <td>{{ key }}</td>
+                    <td>
+
+                      <div class="switch">
+                        <label>
+                          Off
+                          <input type="checkbox" ng-model="attributeSelection[key]">
+                          <span class="lever"></span>
+                          On
+                        </label>
+                      </div>
+
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+
+              </div>
             </div>
-
           </div>
 
-          <p>Lorem ipsum dolor sit amet.</p>
         </div>
       </li>
     </ul>
