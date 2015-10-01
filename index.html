@@ -93,7 +93,7 @@
       </li>
     </ul>
 
-    <div id="quotesTableContainer" style="overflow:scroll;">
+    <div id="quotesTableContainer" style="overflow:scroll; margin-bottom: 35px;">
 
       <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
              class="striped animate-if"
@@ -126,7 +126,6 @@
         </tr>
         </tbody>
       </table>
-      <p></p>
     </div>
 
 
@@ -134,7 +133,9 @@
          ng-show="quoteSelection[quote.id]"
          class="animate-show">
 
-      <p class="flow-text white-text">{{ quote.id }}</p>
+      <!--<p class="flow-text white-text">{{ quote.id }}</p>-->
+      <div class="divider"></div>
+      <div class="section white-text"><h5>{{ quote.id }}</h5></div>
 
       <div class="row">
         <div class="col s12 m6">
