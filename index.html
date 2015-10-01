@@ -111,7 +111,6 @@
 
         <tbody>
         <tr ng-repeat="quote in quotes"
-            class="repeated-item"
             ng-if="quoteSelection[quote.id]">
 
           <td ng-repeat="key in getKeys(refQuote)"
@@ -131,8 +130,7 @@
     </div>
 
 
-    <div ng-repeat="quote in quotes"
-         class="repeated-item">
+    <div ng-repeat="quote in quotes">
 
       <div class="row animate-show"
            ng-show="quoteSelection[quote.id]">
