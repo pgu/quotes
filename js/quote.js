@@ -44,8 +44,6 @@ angular.module('quotesApp')
       ctrl.initQuoteSelection($scope.quotes, $scope.quoteSelection);
       ctrl.initKeySelection($scope.quotes, $scope.keySelection);
 
-      $scope.$watch('quoteSelection', ctrl.storeQuoteSelection, true);
-      $scope.$watch('keySelection', ctrl.storeKeySelection, true);
 
       _.each($scope.quotes, function (quote) {
 
@@ -128,45 +126,55 @@ angular.module('quotesApp')
 
     function initQuoteSelection (quotes, quoteSelection) {
 
-      var selectionFromStorage = $window.localStorage.getItem(ctrl.QUOTE_LS);
+      _.each(quotes, function (quote) {
+        quoteSelection[ quote.id ] = true;
+      });
 
-      if (_.isEmpty(selectionFromStorage)) {
+      $timeout(function () {
 
-        _.each(quotes, function (quote) {
-          quoteSelection[ quote.id ] = true;
-        });
+        var selectionFromStorage = $window.localStorage.getItem(ctrl.QUOTE_LS);
 
-        storeQuoteSelection(quoteSelection);
+        if (_.isEmpty(selectionFromStorage)) {
+          storeQuoteSelection(quoteSelection);
 
-      } else {
+        } else {
+          var selection = JSON.parse(selectionFromStorage);
+          _.merge(quoteSelection, selection);
+        }
 
-        var selection = JSON.parse(selectionFromStorage);
-        _.merge(quoteSelection, selection);
-      }
+        $scope.$watch('quoteSelection', ctrl.storeQuoteSelection, true);
+
+      }, 500);
 
     }
 
     function initKeySelection (quotes, keySelection) {
 
-      var selectionFromStorage = $window.localStorage.getItem(ctrl.KEY_LS);
-
-      if (_.isEmpty(selectionFromStorage)) {
-
-        if (!_.isEmpty(quotes)) {
-
-          var first8Keys = _.take($scope.getKeys(_.first(quotes)), 8);
-
-          _.each(first8Keys, function (key) {
-            keySelection[ key ] = true;
-          });
-
-          storeKeySelection(keySelection);
-        }
-      } else {
-
-        var selection = JSON.parse(selectionFromStorage);
-        _.merge(keySelection, selection);
+      if (_.isEmpty(quotes)) {
+        return;
       }
+
+      var first8Keys = _.take($scope.getKeys(_.first(quotes)), 8);
+
+      _.each(first8Keys, function (key) {
+        keySelection[ key ] = true;
+      });
+
+      $timeout(function () {
+
+        var selectionFromStorage = $window.localStorage.getItem(ctrl.KEY_LS);
+
+        if (_.isEmpty(selectionFromStorage)) {
+          storeKeySelection(keySelection);
+
+        } else {
+          var selection = JSON.parse(selectionFromStorage);
+          _.merge(keySelection, selection);
+        }
+
+        $scope.$watch('keySelection', ctrl.storeKeySelection, true);
+
+      }, 500);
 
     }
 
