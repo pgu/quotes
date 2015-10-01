@@ -67,7 +67,7 @@
                   </thead>
 
                   <tbody>
-                  <tr ng-repeat="key in keys(refQuote)">
+                  <tr ng-repeat="key in getKeys(refQuote)">
                     <td>{{ key }}</td>
                     <td>
 
@@ -100,7 +100,7 @@
              style="background-color: white">
         <thead>
         <tr>
-          <th ng-repeat="key in keys(refQuote)"
+          <th ng-repeat="key in getKeys(refQuote)"
               ng-if="keySelection[key]"
               data-field="key"
               style="text-align: right;">
@@ -113,7 +113,7 @@
         <tr ng-repeat="quote in quotes"
             ng-if="quoteSelection[quote.id]">
 
-          <td ng-repeat="key in keys(refQuote)"
+          <td ng-repeat="key in getKeys(refQuote)"
               ng-if="keySelection[key]"
               style="text-align: right;"
               ng-class="{ 'bg-up': 'green',

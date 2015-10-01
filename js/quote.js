@@ -6,6 +6,7 @@ angular.module('quotesApp')
     $scope.quoteState = {};
     $scope.quoteSelection = {};
     $scope.keySelection = {};
+    $scope.getKeys = getKeys;
 
     var ctrl = this;
     ctrl.onData = onData;
@@ -35,20 +36,13 @@ angular.module('quotesApp')
 
     myEventSource.open();
 
-    $scope.keys = function (quote) {
-      return _.filter(_.keys(quote), function (key) {
-        var startsWith$$ = key.indexOf('$$') === 0;
-        return !startsWith$$;
-      });
-    };
-
     function onData (quotes) {
       console.log('onData', quotes)
 
       $scope.quotes = quotes;
 
       ctrl.initQuoteSelection($scope.quotes, $scope.quoteSelection);
-      ctrl.initKeySelection($scope.keys, $scope.quotes, $scope.keySelection);
+      ctrl.initKeySelection($scope.quotes, $scope.keySelection);
 
       $scope.$watch('quoteSelection', ctrl.storeQuoteSelection, true);
       $scope.$watch('keySelection', ctrl.storeKeySelection, true);
@@ -152,7 +146,7 @@ angular.module('quotesApp')
 
     }
 
-    function initKeySelection (keys, quotes, keySelection) {
+    function initKeySelection (quotes, keySelection) {
 
       var selectionFromStorage = $window.localStorage.getItem(ctrl.KEY_LS);
 
@@ -160,8 +154,7 @@ angular.module('quotesApp')
 
         if (!_.isEmpty(quotes)) {
 
-          var first8Keys = _.take($scope.keys(_.first(quotes)), 8);
-          console.info('164', 'initKeySelection', '8keys', first8Keys);
+          var first8Keys = _.take($scope.getKeys(_.first(quotes)), 8);
 
           _.each(first8Keys, function (key) {
             keySelection[ key ] = true;
@@ -175,6 +168,13 @@ angular.module('quotesApp')
         _.merge(keySelection, selection);
       }
 
+    }
+
+    function getKeys (quote) {
+      return _.filter(_.keys(quote), function (key) {
+        var startsWith$$ = key.indexOf('$$') === 0;
+        return !startsWith$$;
+      });
     }
 
   });
