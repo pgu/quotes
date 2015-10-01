@@ -5,7 +5,7 @@ angular.module('quotesApp')
     $scope.quotes = [];
     $scope.quoteState = {};
     $scope.quoteSelection = {};
-    $scope.attributeSelection = {};
+    $scope.keySelection = {};
 
     var ctrl = this;
     ctrl.onData = onData;
@@ -43,7 +43,7 @@ angular.module('quotesApp')
       if (!_.isEmpty($scope.quotes)) {
 
         _.each($scope.keys(_.first($scope.quotes)), function (key) {
-          $scope.attributeSelection[ key ] = true;
+          $scope.keySelection[ key ] = true;
         });
 
       }
@@ -60,8 +60,8 @@ angular.module('quotesApp')
       $scope.$applyAsync();
     }
 
-    function getNumValue (quote, attribute) {
-      return parseFloat(quote[ attribute ], 10);
+    function getNumValue (quote, key) {
+      return parseFloat(quote[ key ], 10);
     }
 
     function onPatch (updates) {
@@ -78,23 +78,23 @@ angular.module('quotesApp')
       _(updates)
         .filter(function (update) {
           var path = quoteHelper.parsePath(update.path);
-          return path.attribute !== 'tradetime';
+          return path.key !== 'tradetime';
         })
         .each(function (update) {
 
           var path = quoteHelper.parsePath(update.path);
           var quoteId = $scope.quotes[ path.idx ].id;
-          var att = path.attribute;
+          var key = path.key;
 
-          var oldValue = getNumValue(oldQuotes[ quoteId ], att);
-          var newValue = getNumValue(updatedQuotes[ quoteId ], att);
+          var oldValue = getNumValue(oldQuotes[ quoteId ], key);
+          var newValue = getNumValue(updatedQuotes[ quoteId ], key);
 
           var bgCss = newValue > oldValue ? 'bg-up' : 'bg-down';
-          $scope.quoteState[ quoteId ][ att ] = bgCss;
+          $scope.quoteState[ quoteId ][ key ] = bgCss;
 
           $timeout(function () {
-            var bgCss = $scope.quoteState[ quoteId ][ att ];
-            $scope.quoteState[ quoteId ][ att ] = ctrl.bg2fontCss[ bgCss ];
+            var bgCss = $scope.quoteState[ quoteId ][ key ];
+            $scope.quoteState[ quoteId ][ key ] = ctrl.bg2fontCss[ bgCss ];
           }, 1000);
 
         })

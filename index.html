@@ -74,7 +74,7 @@
                       <div class="switch">
                         <label>
                           Off
-                          <input type="checkbox" ng-model="attributeSelection[key]">
+                          <input type="checkbox" ng-model="keySelection[key]">
                           <span class="lever"></span>
                           On
                         </label>
@@ -109,10 +109,11 @@
         </thead>
 
         <tbody>
-        <tr ng-repeat="quote in quotes">
+        <tr ng-repeat="quote in quotes"
+            ng-if="quoteSelection[quote.id]">
 
-          <td ng-if="quoteSelection[quote.id]"
-              ng-repeat="key in keys(refQuote)"
+          <td ng-repeat="key in keys(refQuote)"
+              ng-if="keySelection[key]"
               style="text-align: right;"
               ng-class="{ 'bg-up': 'green',
               'bg-down': 'red',

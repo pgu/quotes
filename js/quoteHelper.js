@@ -18,7 +18,7 @@ angular.module('quotesApp')
 
       return {
         idx: _.first(parts),
-        attribute: _.last(parts)
+        key: _.last(parts)
       };
     }
 
@@ -61,7 +61,7 @@ angular.module('quotesApp')
       _.each(updates, function (update) {
 
         var path = parsePath(update.path);
-        quotes[ path.idx ][ path.attribute ] = update.value;
+        quotes[ path.idx ][ path.key ] = update.value;
 
       });
 
