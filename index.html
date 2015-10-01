@@ -96,7 +96,7 @@
     <div style="overflow:scroll;">
 
       <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
-             class="striped"
+             class="striped animate-if"
              style="background-color: white">
         <thead>
         <tr>
@@ -111,6 +111,7 @@
 
         <tbody>
         <tr ng-repeat="quote in quotes"
+            class="repeated-item"
             ng-if="quoteSelection[quote.id]">
 
           <td ng-repeat="key in getKeys(refQuote)"
@@ -130,9 +131,10 @@
     </div>
 
 
-    <div ng-repeat="quote in quotes">
+    <div ng-repeat="quote in quotes"
+         class="repeated-item">
 
-      <div class="row"
+      <div class="row animate-show"
            ng-show="quoteSelection[quote.id]">
         <div class="col s6">
           <div class="card-panel">
