@@ -1,6 +1,6 @@
 angular.module('quotesApp')
-  .controller('QuotesController', function ($window, $scope, $timeout,
-                                            STREAMDATAIO_KEY, quoteHelper, chartHelper) {
+  .controller('QuoteController', function ($window, $scope, $timeout,
+                                           STREAMDATAIO_KEY, quoteHelper, chartHelper) {
 
     $scope.quotes = [];
     $scope.quoteState = {};
