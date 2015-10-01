@@ -101,6 +101,7 @@
         <thead>
         <tr>
           <th ng-repeat="key in keys(refQuote)"
+              ng-if="keySelection[key]"
               data-field="key"
               style="text-align: right;">
             {{ key }}
