@@ -11,7 +11,7 @@
 </head>
 <body class="blue-grey lighten-2" ng-cloak>
 
-<div class="container">
+<div id="mainContainer" class="container">
 
   <h1 class="white-text">Stock Quotes</h1>
 
@@ -93,7 +93,7 @@
       </li>
     </ul>
 
-    <div style="overflow:scroll;">
+    <div id="quotesTableContainer" style="overflow:scroll;">
 
       <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
              class="striped animate-if"

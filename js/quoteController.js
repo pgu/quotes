@@ -17,6 +17,7 @@ angular.module('quotesApp')
     ctrl.storeKeySelection = storeKeySelection;
     ctrl.initQuoteSelection = initQuoteSelection;
     ctrl.initKeySelection = initKeySelection;
+    ctrl.updateQuotesTableWidth = updateQuotesTableWidth;
 
     ctrl.bg2fontCss = {
       'bg-up': 'font-up',
@@ -35,6 +36,12 @@ angular.module('quotesApp')
       .onOpen(ctrl.onOpen);
 
     myEventSource.open();
+
+    $timeout(function () {
+      ctrl.updateQuotesTableWidth();
+      $(window).on('resize', ctrl.updateQuotesTableWidth);
+    });
+
 
     function onData (quotes) {
       console.log('onData', quotes)
@@ -183,6 +190,10 @@ angular.module('quotesApp')
         var startsWith$$ = key.indexOf('$$') === 0;
         return !startsWith$$;
       });
+    }
+
+    function updateQuotesTableWidth () {
+      $('#quotesTableContainer').width($('#mainContainer').outerWidth());
     }
 
   });
