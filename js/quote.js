@@ -12,11 +12,18 @@ angular.module('quotesApp')
     ctrl.onPatch = onPatch;
     ctrl.onError = onError;
     ctrl.onOpen = onOpen;
+    ctrl.storeQuoteSelection = storeQuoteSelection;
+    ctrl.storeKeySelection = storeKeySelection;
+    ctrl.initQuoteSelection = initQuoteSelection;
+    ctrl.initKeySelection = initKeySelection;
 
     ctrl.bg2fontCss = {
       'bg-up': 'font-up',
       'bg-down': 'font-down'
     };
+
+    ctrl.QUOTE_LS = 'quoteSelection';
+    ctrl.KEY_LS = 'keySelection';
 
     var myEventSource = streamdataio.createEventSource('https://test_quotes_ftw.apispark.net/v1/quotes/', STREAMDATAIO_KEY);
 
@@ -40,17 +47,13 @@ angular.module('quotesApp')
 
       $scope.quotes = quotes;
 
-      if (!_.isEmpty($scope.quotes)) {
+      ctrl.initQuoteSelection($scope.quotes, $scope.quoteSelection);
+      ctrl.initKeySelection($scope.keys, $scope.quotes, $scope.keySelection);
 
-        _.each($scope.keys(_.first($scope.quotes)), function (key) {
-          $scope.keySelection[ key ] = true;
-        });
-
-      }
+      $scope.$watch('quoteSelection', ctrl.storeQuoteSelection, true);
+      $scope.$watch('keySelection', ctrl.storeKeySelection, true);
 
       _.each($scope.quotes, function (quote) {
-
-        $scope.quoteSelection[ quote.id ] = true;
 
         chartHelper.initPriceChart(quote, [ quoteHelper.getPricePoint(quote) ]);
         chartHelper.initVolumeChart(quote, [ quoteHelper.getVolumePoint(quote) ]);
@@ -119,6 +122,59 @@ angular.module('quotesApp')
 
     function onOpen (data) {
       console.log('open', data)
+    }
+
+    function storeQuoteSelection (newValue) {
+      $window.localStorage.setItem(ctrl.QUOTE_LS, JSON.stringify(newValue));
+    }
+
+    function storeKeySelection (newValue) {
+      $window.localStorage.setItem(ctrl.KEY_LS, JSON.stringify(newValue));
+    }
+
+    function initQuoteSelection (quotes, quoteSelection) {
+
+      var selectionFromStorage = $window.localStorage.getItem(ctrl.QUOTE_LS);
+
+      if (_.isEmpty(selectionFromStorage)) {
+
+        _.each(quotes, function (quote) {
+          quoteSelection[ quote.id ] = true;
+        });
+
+        storeQuoteSelection(quoteSelection);
+
+      } else {
+
+        var selection = JSON.parse(selectionFromStorage);
+        _.merge(quoteSelection, selection);
+      }
+
+    }
+
+    function initKeySelection (keys, quotes, keySelection) {
+
+      var selectionFromStorage = $window.localStorage.getItem(ctrl.KEY_LS);
+
+      if (_.isEmpty(selectionFromStorage)) {
+
+        if (!_.isEmpty(quotes)) {
+
+          var first8Keys = _.take($scope.keys(_.first(quotes)), 8);
+          console.info('164', 'initKeySelection', '8keys', first8Keys);
+
+          _.each(first8Keys, function (key) {
+            keySelection[ key ] = true;
+          });
+
+          storeKeySelection(keySelection);
+        }
+      } else {
+
+        var selection = JSON.parse(selectionFromStorage);
+        _.merge(keySelection, selection);
+      }
+
     }
 
   });
