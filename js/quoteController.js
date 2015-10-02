@@ -7,6 +7,7 @@ angular.module('quotesApp')
     $scope.quoteSelection = {};
     $scope.keySelection = {};
     $scope.getKeys = getKeys;
+    $scope.goToTop = goToTop;
 
     var ctrl = this;
     ctrl.onData = onData;
@@ -42,7 +43,6 @@ angular.module('quotesApp')
       $(window).on('resize', ctrl.updateQuotesTableWidth);
     });
 
-
     function onData (quotes) {
       console.log('onData', quotes)
 
@@ -60,6 +60,10 @@ angular.module('quotesApp')
       });
 
       $scope.$applyAsync();
+
+      $timeout(function () {
+        $('.scrollspy').scrollSpy();
+      }, 300);
     }
 
     function getNumValue (quote, key) {
@@ -201,7 +205,11 @@ angular.module('quotesApp')
     }
 
     function updateQuotesTableWidth () {
-      $('#quotesTableContainer').width($('#mainContainer').outerWidth());
+      $('#quotesTableContainer').width($('#quoteDataContainer').width());
+    }
+
+    function goToTop () {
+      $('html, body').animate({ scrollTop: 0 }, 'slow');
     }
 
   });

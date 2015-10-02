@@ -11,144 +11,174 @@
 </head>
 <body class="blue-grey lighten-2" ng-cloak>
 
-<div id="mainContainer" class="container">
+<div class="container">
 
-  <h1 class="white-text">Stock Quotes</h1>
+  <div class="row"
+       ng-controller="QuoteController">
 
-  <p class="flow-text white-text">A dashboard to monitor stock quotes from Google Finances.</p>
+    <div id="quoteDataContainer" class="col s12 m9 l10">
+      <h1 class="white-text">Stock Quotes</h1>
 
-  <div ng-controller="QuoteController">
+      <p class="flow-text white-text">A dashboard to monitor stock quotes from Google Finances.</p>
 
-    <ul class="collapsible popout" data-collapsible="accordion">
-      <li>
-        <div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
-        <div class="collapsible-body white">
+      <div>
 
-          <div class="container">
-            <div class="row">
-              <div class="col s12 m6">
+        <ul class="collapsible popout" data-collapsible="accordion">
+          <li>
+            <div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
+            <div class="collapsible-body white">
 
-                <table>
-                  <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th></th>
-                  </tr>
-                  </thead>
+              <div class="container">
+                <div class="row">
+                  <div class="col s12 m6">
 
-                  <tbody>
-                  <tr ng-repeat="quote in quotes">
-                    <td>{{ quote.id }}</td>
-                    <td>
+                    <table>
+                      <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th></th>
+                      </tr>
+                      </thead>
 
-                      <div class="switch">
-                        <label>
-                          Off
-                          <input type="checkbox" ng-model="quoteSelection[quote.id]">
-                          <span class="lever"></span>
-                          On
-                        </label>
-                      </div>
+                      <tbody>
+                      <tr ng-repeat="quote in quotes">
+                        <td>{{ quote.id }}</td>
+                        <td>
 
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+                          <div class="switch">
+                            <label>
+                              Off
+                              <input type="checkbox" ng-model="quoteSelection[quote.id]">
+                              <span class="lever"></span>
+                              On
+                            </label>
+                          </div>
 
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                  <div class="col s12 m6">
+
+                    <table ng-if="quotes.length" ng-init="refQuote = quotes[0]">
+                      <thead>
+                      <tr>
+                        <th>Attributes</th>
+                        <th></th>
+                      </tr>
+                      </thead>
+
+                      <tbody>
+                      <tr ng-repeat="key in getKeys(refQuote)">
+                        <td>{{ key }}</td>
+                        <td>
+
+                          <div class="switch">
+                            <label>
+                              Off
+                              <input type="checkbox" ng-model="keySelection[key]">
+                              <span class="lever"></span>
+                              On
+                            </label>
+                          </div>
+
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
               </div>
-              <div class="col s12 m6">
 
-                <table ng-if="quotes.length" ng-init="refQuote = quotes[0]">
-                  <thead>
-                  <tr>
-                    <th>Attributes</th>
-                    <th></th>
-                  </tr>
-                  </thead>
+            </div>
+          </li>
+        </ul>
 
-                  <tbody>
-                  <tr ng-repeat="key in getKeys(refQuote)">
-                    <td>{{ key }}</td>
-                    <td>
+        <div id="quotesTableContainer" style="overflow:scroll; margin-bottom: 35px;">
 
-                      <div class="switch">
-                        <label>
-                          Off
-                          <input type="checkbox" ng-model="keySelection[key]">
-                          <span class="lever"></span>
-                          On
-                        </label>
-                      </div>
+          <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
+                 class="striped animate-if"
+                 style="background-color: white">
+            <thead>
+            <tr>
+              <th ng-repeat="key in getKeys(refQuote)"
+                  ng-if="keySelection[key]"
+                  data-field="key"
+                  style="text-align: right;">
+                {{ key }}
+              </th>
+            </tr>
+            </thead>
 
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+            <tbody>
+            <tr ng-repeat="quote in quotes"
+                ng-if="quoteSelection[quote.id]">
 
+              <td ng-repeat="key in getKeys(refQuote)"
+                  ng-if="keySelection[key]"
+                  style="text-align: right;"
+                  ng-class="{ 'bg-up': 'green',
+              'bg-down': 'red',
+              'font-up': 'green-text text-darken-2',
+              'font-down': 'red-text text-darken-2',
+              }[quoteState[quote.id][key]]">
+                {{ quote[key] }}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <div ng-repeat="quote in quotes"
+             ng-show="quoteSelection[quote.id]"
+             class="animate-show">
+
+          <div class="divider"></div>
+          <div id="section-{{ quote.id }}"
+               class="section scrollspy white-text">
+            <h5>{{ quote.id }}</h5>
+          </div>
+
+          <div class="row">
+            <div class="col s12 m6">
+              <div class="card-panel">
+                <div id="price-chart-{{ quote.id }}"></div>
+              </div>
+            </div>
+            <div class="col s12 m6">
+              <div class="card-panel">
+                <div id="volume-chart-{{ quote.id }}"></div>
               </div>
             </div>
           </div>
 
         </div>
-      </li>
-    </ul>
 
-    <div id="quotesTableContainer" style="overflow:scroll; margin-bottom: 35px;">
-
-      <table ng-if="quotes.length" ng-init="refQuote = quotes[0]"
-             class="striped animate-if"
-             style="background-color: white">
-        <thead>
-        <tr>
-          <th ng-repeat="key in getKeys(refQuote)"
-              ng-if="keySelection[key]"
-              data-field="key"
-              style="text-align: right;">
-            {{ key }}
-          </th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr ng-repeat="quote in quotes"
-            ng-if="quoteSelection[quote.id]">
-
-          <td ng-repeat="key in getKeys(refQuote)"
-              ng-if="keySelection[key]"
-              style="text-align: right;"
-              ng-class="{ 'bg-up': 'green',
-              'bg-down': 'red',
-              'font-up': 'green-text text-darken-2',
-              'font-down': 'red-text text-darken-2',
-              }[quoteState[quote.id][key]]">
-            {{ quote[key] }}
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      </div>
     </div>
 
-
-    <div ng-repeat="quote in quotes"
-         ng-show="quoteSelection[quote.id]"
-         class="animate-show">
-
-      <div class="divider"></div>
-      <div class="section white-text"><h5>{{ quote.id }}</h5></div>
-
-      <div class="row">
-        <div class="col s12 m6">
-          <div class="card-panel">
-            <div id="price-chart-{{ quote.id }}"></div>
-          </div>
-        </div>
-        <div class="col s12 m6">
-          <div class="card-panel">
-            <div id="volume-chart-{{ quote.id }}"></div>
-          </div>
-        </div>
+    <div class="col hide-on-small-only m3 l2">
+      <div class="pinned">
+        <ul class="section table-of-contents"
+            ng-show="quotes.length">
+          <li>
+            <a ng-click="goToTop()"
+               style="cursor: pointer"
+               class="white-text">Top</a>
+          </li>
+          <li ng-repeat="quote in quotes"
+              ng-show="quoteSelection[quote.id]">
+            <a href="#section-{{ quote.id }}"
+               class="white-text">
+              {{ quote.id }}
+            </a>
+          </li>
+        </ul>
       </div>
-
     </div>
 
   </div>
