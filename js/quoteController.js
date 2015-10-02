@@ -106,8 +106,16 @@ angular.module('quotesApp')
       // update charts
       _.each(updatedQuotes, function (updatedQuote) {
 
-        chartHelper.getPriceSerie(updatedQuote.id).addPoint(quoteHelper.getPricePoint(updatedQuote));
-        chartHelper.getVolumeSerie(updatedQuote.id).addPoint(quoteHelper.getVolumePoint(updatedQuote));
+        var MAXIMUM_POINTS = 2;
+
+        var priceSerie = chartHelper.getPriceSerie(updatedQuote.id);
+        var shouldShiftPrices = _.size(priceSerie.data) > MAXIMUM_POINTS;
+        priceSerie.addPoint(quoteHelper.getPricePoint(updatedQuote), true, shouldShiftPrices);
+
+
+        var volumeSerie = chartHelper.getVolumeSerie(updatedQuote.id);
+        var shouldShiftVolumes = _.size(volumeSerie.data) > MAXIMUM_POINTS;
+        volumeSerie.addPoint(quoteHelper.getVolumePoint(updatedQuote), true, shouldShiftVolumes);
 
       });
 
