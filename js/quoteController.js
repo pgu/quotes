@@ -106,7 +106,7 @@ angular.module('quotesApp')
       // update charts
       _.each(updatedQuotes, function (updatedQuote) {
 
-        var MAXIMUM_POINTS = 2;
+        var MAXIMUM_POINTS = 10;
 
         var priceSerie = chartHelper.getPriceSerie(updatedQuote.id);
         var shouldShiftPrices = _.size(priceSerie.data) > MAXIMUM_POINTS;
