@@ -116,11 +116,11 @@ angular.module('quotesApp')
     }
 
     function onError (data) {
-      console.log('error', data);
+      console.log('onError', data);
     }
 
     function onOpen (data) {
-      console.log('open', data)
+      console.log('onOpen', data)
     }
 
     function storeQuoteSelection (newValue) {
