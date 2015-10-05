@@ -15,5 +15,7 @@ and to build the dashboard, we used:
 - [AngularJS](https://angularjs.org/)
 - [MaterialCSS](materializecss.com/)
 - [HighCharts](http://www.highcharts.com/)
- 
 
+## Examples
+![](stock-quotes-1.gif)
+![](stock-quotes-2.gif)
